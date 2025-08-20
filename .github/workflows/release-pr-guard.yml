@@ -24,22 +24,22 @@ jobs:
             const head = pr.head.ref;
             const semverRe = /^(?:release|hotfix)\/((0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)(?:-(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*)(?:\.(?:0|[1-9]\d*|\d*[A-Za-z-][0-9A-Za-z-]*))*)?(?:\+[0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*)?)$/;
             const m = head.match(semverRe);
-            if (!m) core.setFailed('Branchname ohne gültige SemVer: erwartet release/x.y.z[‑pre][+build] oder hotfix/x.y.z[‑pre][+build]');
+            if (!m) core.setFailed('Branch name without valid SemVer: expected release/x.y.z[-pre][+build] or hotfix/x.y.z[-pre][+build]');
             const version = m[1];
             const tag = `v${version}`;
 
-            // Tag vorhanden?
+            // Tag exists?
             let tagExists = false;
             try { await github.rest.git.getRef({ owner: context.repo.owner, repo: context.repo.repo, ref: `tags/${tag}` }); tagExists = true; }
             catch (e) { if (e.status !== 404) throw e; }
 
-            // Release vorhanden?
+            // Release exists?
             let releaseExists = false;
             try { await github.rest.repos.getReleaseByTag({ owner: context.repo.owner, repo: context.repo.repo, tag }); releaseExists = true; }
             catch (e) { if (e.status !== 404) throw e; }
 
             if (tagExists || releaseExists) {
-              core.setFailed(`Tag/Release ${tag} existiert bereits – PR darf nicht gemergt werden.`);
+              core.setFailed(`Tag/Release ${tag} already exists – PR must not be merged.`);
             } else {
-              core.info(`OK: ${tag} ist frei.`);
+              core.info(`OK: ${tag} is available.`);
             }
