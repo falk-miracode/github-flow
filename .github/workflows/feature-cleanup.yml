@@ -1,0 +1,34 @@
+name: feature-cleanup
+on:
+  pull_request:
+    types: [closed]
+
+permissions:
+  contents: write
+
+jobs:
+  delete-feature-branch:
+    if: >
+      github.event.pull_request.merged == true &&
+      github.event.pull_request.base.ref == 'develop' &&
+      startsWith(github.event.pull_request.head.ref, 'feature/')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/github-script@v7
+        with:
+          script: |
+            const pr = context.payload.pull_request;
+            const owner = context.repo.owner;
+            const repo  = context.repo.repo;
+
+            if (pr.head.repo.full_name !== `${owner}/${repo}`) {
+              core.info('Fork branch – deletion skipped.');
+              return;
+            }
+            try {
+              await github.rest.git.deleteRef({ owner, repo, ref: `heads/${pr.head.ref}` });
+              core.info(`Branch deleted: ${pr.head.ref}`);
+            } catch (e) {
+              if (e.status === 422 || e.status === 404) core.info('Branch already deleted or not found.');
+              else throw e;
+            }
