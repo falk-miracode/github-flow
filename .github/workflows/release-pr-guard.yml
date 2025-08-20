@@ -10,7 +10,7 @@ permissions:
 
 jobs:
   guard:
-    name: PR Guard
+    name: Release/Hotfix PR Guard
     if: |
       startsWith(github.event.pull_request.head.ref, 'release/') ||
       startsWith(github.event.pull_request.head.ref, 'hotfix/')
