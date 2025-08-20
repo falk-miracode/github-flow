@@ -115,7 +115,7 @@ jobs:
                     await github.rest.issues.addLabels({ owner, repo, issue_number: pr.number, labels: ['needs-conflict-resolution'] });
                     await github.rest.issues.createComment({
                       owner, repo, issue_number: pr.number,
-                      body: `Conflicts detected (e.g. package.json). Please resolve manually.`
+                      body: `Conflicts detected. Please resolve manually.`
                     });
                   }
                 } catch {}
