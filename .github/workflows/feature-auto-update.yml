@@ -84,7 +84,9 @@ jobs:
                     await github.rest.issues.addLabels({
                       owner, repo, issue_number: pr.number, labels: ['needs-conflict-resolution']
                     });
-                  } catch (_) {}
+                  } catch (e) {
+                    core.warning(`#${pr.number}: failed to add 'needs-conflict-resolution' label: ${e.message}`);
+                  }
                   try {
                     await github.rest.issues.createComment({
                       owner, repo, issue_number: pr.number,
