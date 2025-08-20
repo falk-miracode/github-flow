@@ -1,4 +1,4 @@
-<h1>Hello Branch Model Test</h1>
+<h1>Branch Model Test</h1>
 <p>Version: <span id="version">VERSION</span></p>
 <script>
     fetch('./package.json')
@@ -8,6 +8,6 @@
         })
         .catch(error => {
             console.error('Error fetching version:', error);
-            document.getElementById('version').textContent = 'ERROR';
+            document.getElementById('version').textContent = 'Could not load version from package.json';
         });
 </script>
